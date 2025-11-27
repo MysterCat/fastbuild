@@ -91,7 +91,7 @@ function createQuickPick(
   customResult?: (
     config: { key: CommitType, map: Map<CommitType, any>, list: InquiryItem<CommitType>[], index: number },
     options: PickOptions<PickItem<string>, false>,
-    select: PickItem<string>
+    select: PickItem<string>,
   ) => Promise<any>,
 ): InquiryItem<CommitType> {
   return createInquiryItem<CommitType, string>('quickPick', {

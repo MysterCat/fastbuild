@@ -14,17 +14,19 @@
           "applyTo": "allDocuments",
           "background": {
             "activeOnStart": true,
-            "beginsPattern": "rolldown-vite v\\d+\\.\\d+\\.\\d+ building for production...",
-            "endsPattern": "built in"
+            "beginsPattern": "Build start",
+            "endsPattern": "Watching for changes"
           },
           "pattern": [
             {
-              "regexp": "(ERROR|WARNING)\\(TypeScript\\)  (.*)",
-              "severity": 1,
-              "message": 2
+              "regexp": "^\\sERROR\\s\\s+(.+)$",
+              "message": 1
             },
             {
-              "regexp": "^ FILE  (.*):(\\d*):(\\d*)$",
+              "regexp": "^\\s*$"
+            },
+            {
+              "regexp": "^\\s+(.+):(\\d+):(\\d+):$",
               "file": 1,
               "line": 2,
               "column": 3
@@ -67,23 +69,12 @@
       }
     },
     {
-      "type": "npm",
-      "script": "watch-tests",
-      "problemMatcher": "$tsc-watch",
-      "isBackground": true,
-      "presentation": {
-        "reveal": "never",
-        "group": "watchers"
-      },
-      "group": "build"
-    },
-    {
-      "label": "tasks: watch-tests",
-      "dependsOn": [
-        "npm: watch",
-        "npm: watch-tests"
-      ],
-      "problemMatcher": []
+      "label": "build",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsdown"],
+      "group": "build",
+      "isBackground": false
     }
   ]
 }

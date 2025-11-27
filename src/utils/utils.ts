@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
+import process from 'node:process'
 
 import { parse } from 'jsonc-parser'
 
@@ -35,4 +36,23 @@ export function existsPath(cwd: string, paths: string | string[] = 'package.json
 export function isSubPath(parentPath: string, childPath: string) {
   const relative = path.relative(parentPath, childPath)
   return relative && !relative.startsWith('..') && !path.isAbsolute(relative)
+}
+
+type OS_TYPE = 'windows' | 'osx' | 'linux'
+/**
+ * 获取当前操作系统类型
+ */
+export function getOSType(): OS_TYPE {
+  const platform = process.platform
+
+  switch (platform) {
+    case 'win32':
+      return 'windows'
+    case 'darwin':
+      return 'osx'
+    case 'linux':
+      return 'linux'
+    default:
+      return 'windows'
+  }
 }

@@ -303,13 +303,13 @@ export function createInquiryItem<K>(
         map: Map<K, any>
         list: InquiryItem<K>[]
         index: number
-      }
+      },
     ) => Promise<InputOptions>)
     defaultValue?: any
     customResult?: (
       config: { key: K, map: Map<K, any>, list: InquiryItem<K>[], index: number },
       options: InputOptions,
-      select: string
+      select: string,
     ) => Promise<any>
   } | {
     handling?: (config: { key: K, map: Map<K, any>, list: InquiryItem<K>[], index: number }) => Promise<any>
@@ -328,14 +328,14 @@ export function createInquiryItem<K, V = any, T = PickItem<V>>(
         map: Map<K, any>
         list: InquiryItem<K>[]
         index: number
-      }
+      },
     ) => Promise<PickOptions<T, false>>)
     defaultValue?: any
     valueFormat?: (options: PickOptions<T, false>, select: T) => any
     customResult?: (
       config: { key: K, map: Map<K, any>, list: InquiryItem<K>[], index: number },
       options: PickOptions<T, false>,
-      select: T
+      select: T,
     ) => Promise<any>
   } | {
     handling?: (config: { key: K, map: Map<K, any>, list: InquiryItem<K>[], index: number }) => Promise<any>
@@ -354,14 +354,14 @@ export function createInquiryItem<K, V = any, T = PickItem<V>>(
         map: Map<K, any>
         list: InquiryItem<K>[]
         index: number
-      }
+      },
     ) => Promise<PickOptions<T, true>>)
     defaultValue?: any
     valueFormat?: (options: PickOptions<T, true>, select: T[]) => any
     customResult?: (
       config: { key: K, map: Map<K, any>, list: InquiryItem<K>[], index: number },
       options: PickOptions<T, true>,
-      select: T[]
+      select: T[],
     ) => Promise<any>
   } | {
     handling?: (config: { key: K, map: Map<K, any>, list: InquiryItem<K>[], index: number }) => Promise<any>
@@ -378,7 +378,7 @@ export function createInquiryItem<K, V, T extends PickItem<V>>(
         map: Map<K, any>
         list: InquiryItem<K>[]
         index: number
-      }
+      },
     ) => Promise<InputOptions | PickOptions<T, boolean>>)
     defaultValue?: any
     valueFormat?: any
@@ -386,7 +386,7 @@ export function createInquiryItem<K, V, T extends PickItem<V>>(
     customResult?: (
       config: { key: K, map: Map<K, any>, list: InquiryItem<K>[], index: number },
       options: any,
-      select: any
+      select: any,
     ) => Promise<any>
   },
 ): InquiryItem<K> {

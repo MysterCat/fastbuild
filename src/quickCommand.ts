@@ -2,12 +2,13 @@ import type { Uri } from 'vscode'
 import type { API, Commit, GitExtension, Repository } from '../types/git'
 
 import { execSync } from 'node:child_process'
-import path, { join, relative } from 'node:path'
+import { EOL } from 'node:os'
+import path from 'node:path'
 
 import dayjs from 'dayjs'
 
 import { extensions, window, workspace } from 'vscode'
-import { getWorkspaceFolder, logs, quickCommandConfig, quickCommandMaxTerminalsNumber } from './utils'
+import { getOSType, getWorkspaceFolder, logs, quickCommandConfig, quickCommandMaxTerminalsNumber } from './utils'
 
 /** 获取分支 */
 async function getBranchOrCommit(vscodeGit: API, title: string, type: 'branch', defaultValue?: string): Promise<string | undefined>
@@ -162,104 +163,131 @@ export async function quickCommand(resource: Uri) {
       })
       /** 如果选择了命令 */
       if (select) {
-        /** 获取命令 */
-        let command = select.value
-        /** 要使用的shell */
-        let shellPath: string | undefined = void 0
-        /** 如果命令使用的是bash */
-        if (command.startsWith('(bash)')) {
-          shellPath = join(execSync('where git').toString(), '../../bin/bash.exe') || void 0
-          command = command.replace(/^\(bash\)/, '')
-        }
-
-        /** 获取所有以快速命令开头的终端 */
-        const list = window.terminals.filter(v => /^快速命令(?:-\d+)?$/.test(v.name))
-        /** 获取当前下标 */
-        const index = list.length
-        /** 如果已经存在默认终端, 则附带下标 */
-        let name = `快速命令${index ? `-${index}` : ''}`
-        /** 如果超出限制 */
-        if (index >= quickCommandMaxTerminalsNumber()) {
-          name = '快速命令'
-          /** 清空所有终端 */
-          list.forEach((v) => {
-            v.dispose()
-          })
-        }
-        /** 拆分命令 */
-        const commandList = command.split(/(?<!\\)\$(path|file|dir|(?:custom|branch)(?:<(?:(?!>).)*>)?|commit)/)
-        /** 替换参数 */
-        for (const [i, v] of Object.entries(commandList)) {
-          let value: string | undefined = void 0
-          /** 如果是路径 */
-          if (v === 'path') {
-            value = resource.fsPath
+        const profiles = workspace.getConfiguration(`terminal.integrated.profiles.${getOSType()}`)
+        /** 选择终端 */
+        const shell = await window.showQuickPick(Object.entries(profiles).filter(([,v]) => typeof v === 'object').map(([k, v]) => ({ label: k, value: v, description: v.name })), {
+          placeHolder: '选择终端',
+          ignoreFocusOut: true,
+          matchOnDescription: true,
+        })
+        if (shell) {
+          let shellPath: string | undefined = void 0
+          /** 获取命令 */
+          let command = select.value
+          /** 如果命令使用的是bash */
+          if (command.startsWith('(bash)')) {
+            command = command.replace(/^\(bash\)/, '')
           }
-          /** 如果是文件 */
-          else if (v === 'file' && stat.type === 1) {
-            value = resource.fsPath
+          if (Array.isArray(profiles.get(`${shell.label}.path`))) {
+            shellPath = profiles.get<string[]>(`${shell.label}.path`)!.at(0)
           }
-          /** 如果是文件夹 */
-          else if (v === 'dir') {
-            value = stat.type === 2 ? resource.fsPath : path.dirname(resource.fsPath)
+          else if (typeof profiles.get(`${shell.label}.path`) === 'string') {
+            shellPath = profiles.get<string>(`${shell.label}.path`)
           }
-          /** 如果是自定义 */
-          if (v.startsWith('custom')) {
-            /** 获取自定义 */
-            const custom = await window.showInputBox({
-              title: '请输入自定义',
-              placeHolder: '请输入自定义',
-              prompt: commandList.toSpliced(Number(i), 1, `{${v}}`).join(''),
-              value: v.slice(7, -1),
-              ignoreFocusOut: true,
-            })
-            /** 如果未获取到值, 则取消 */
-            if (custom === void 0) {
-              logs.appendLine('取消执行命令')
-              return
-            }
-            value = custom
-          }
-          /** 如果是分支 */
-          else if (v.startsWith('branch')) {
-            const branch = await getBranchOrCommit(vscodeGit, commandList.toSpliced(Number(i), 1, `{${v}}`).join(''), 'branch', v.slice(7, -1))
-            if (branch === void 0) {
-              logs.appendLine('取消执行命令')
-              return
-            }
-            value = branch
-          }
-          /** 如果是提交 */
-          else if (v === 'commit') {
-            const commit = await getBranchOrCommit(vscodeGit, commandList.toSpliced(Number(i), 1, `{${v}}`).join(''), 'commit')
-            if (commit === void 0) {
-              logs.appendLine('取消执行命令')
-              return
-            }
-            value = commit
-          }
-          /** 如果存在, 则转换为相对路径 */
-          else if (value) {
-            value = relative(workspaceFolder.uri.fsPath, value)
-          }
-          /** 否则直接使用 */
           else {
-            value = v
+            const shellPathList = execSync(`where ${shell.value.source}`).toString().split(EOL).filter(Boolean)
+            if (shellPathList.length > 0) {
+              shellPath = shellPathList.at(-1)
+            }
+            else {
+              logs.appendLine('未找到终端路径')
+              return
+            }
           }
-          if (value === void 0) {
-            logs.appendLine(commandList.join('---'))
-            logs.appendLine('命令执行失败, 取消执行命令')
-            return
+          /** 获取所有以快速命令开头的终端 */
+          const list = window.terminals.filter(v => /^快速命令(?:-\d+)?$/.test(v.name))
+          /** 获取当前下标 */
+          const index = list.length
+          /** 如果已经存在默认终端, 则附带下标 */
+          let name = `快速命令${index ? `-${index}` : ''}`
+          /** 如果超出限制 */
+          if (index >= quickCommandMaxTerminalsNumber()) {
+            name = '快速命令'
+            /** 清空所有终端 */
+            list.forEach((v) => {
+              v.dispose()
+            })
           }
-          /** 替换 */
-          commandList[Number(i)] = value
+          /** 拆分命令 */
+          const commandList = command.split(/(?<!\\)\$(path|file|dir|(?:custom|branch)(?:<(?:(?!>).)*>)?|commit)/)
+          /** 替换参数 */
+          for (const [i, v] of Object.entries(commandList)) {
+            let value: string | undefined = void 0
+            /** 如果是路径 */
+            if (v === 'path') {
+              value = resource.fsPath
+            }
+            /** 如果是文件 */
+            else if (v === 'file' && stat.type === 1) {
+              value = resource.fsPath
+            }
+            /** 如果是文件夹 */
+            else if (v === 'dir') {
+              value = stat.type === 2 ? resource.fsPath : path.dirname(resource.fsPath)
+            }
+            /** 如果是自定义 */
+            if (v.startsWith('custom')) {
+            /** 获取自定义 */
+              const custom = await window.showInputBox({
+                title: '请输入自定义',
+                placeHolder: '请输入自定义',
+                prompt: commandList.toSpliced(Number(i), 1, `{${v}}`).join(''),
+                value: v.slice(7, -1),
+                ignoreFocusOut: true,
+              })
+              /** 如果未获取到值, 则取消 */
+              if (custom === void 0) {
+                logs.appendLine('取消执行命令')
+                return
+              }
+              value = custom
+            }
+            /** 如果是分支 */
+            else if (v.startsWith('branch')) {
+              const branch = await getBranchOrCommit(vscodeGit, commandList.toSpliced(Number(i), 1, `{${v}}`).join(''), 'branch', v.slice(7, -1))
+              if (branch === void 0) {
+                logs.appendLine('取消执行命令')
+                return
+              }
+              value = branch
+            }
+            /** 如果是提交 */
+            else if (v === 'commit') {
+              const commit = await getBranchOrCommit(vscodeGit, commandList.toSpliced(Number(i), 1, `{${v}}`).join(''), 'commit')
+              if (commit === void 0) {
+                logs.appendLine('取消执行命令')
+                return
+              }
+              value = commit
+            }
+            /** 如果存在, 则转换为相对路径 */
+            else if (value) {
+              value = path.relative(workspaceFolder.uri.fsPath, value)
+            }
+            /** 否则直接使用 */
+            else {
+              value = v
+            }
+            if (value === void 0) {
+              logs.appendLine(commandList.join('---'))
+              logs.appendLine('命令执行失败, 取消执行命令')
+              return
+            }
+            /** 替换 */
+            commandList[Number(i)] = value
+          }
+          /** 创建终端 */
+          const pw = window.createTerminal({
+            name,
+            shellPath,
+            isTransient: true,
+            cwd: workspaceFolder.uri,
+          })
+          /** 显示终端 */
+          pw.show()
+          /** 发送命令 */
+          pw.sendText(commandList.join(''))
         }
-        /** 创建终端 */
-        const pw = window.createTerminal({ name, shellPath, isTransient: true, cwd: workspaceFolder.uri })
-        /** 显示终端 */
-        pw.show()
-        /** 发送命令 */
-        pw.sendText(commandList.join(''))
       }
     }
     else {
