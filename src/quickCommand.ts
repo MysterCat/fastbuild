@@ -6,8 +6,8 @@ import { EOL } from 'node:os'
 import path from 'node:path'
 
 import dayjs from 'dayjs'
-
 import { extensions, window, workspace } from 'vscode'
+
 import { getOSType, getWorkspaceFolder, logs, quickCommandConfig, quickCommandMaxTerminalsNumber } from './utils'
 
 /** 获取分支 */
@@ -163,7 +163,8 @@ export async function quickCommand(resource: Uri) {
       })
       /** 如果选择了命令 */
       if (select) {
-        const profiles = workspace.getConfiguration(`terminal.integrated.profiles.${getOSType()}`)
+        const OSType = getOSType()
+        const profiles = workspace.getConfiguration(`terminal.integrated.profiles.${OSType}`)
         /** 选择终端 */
         const shell = await window.showQuickPick(Object.entries(profiles).filter(([,v]) => typeof v === 'object').map(([k, v]) => ({ label: k, value: v, description: v.name })), {
           placeHolder: '选择终端',
@@ -179,19 +180,27 @@ export async function quickCommand(resource: Uri) {
             command = command.replace(/^\(bash\)/, '')
           }
           if (Array.isArray(profiles.get(`${shell.label}.path`))) {
-            shellPath = profiles.get<string[]>(`${shell.label}.path`)!.at(0)
+            const shellPathList = profiles.get<string[]>(`${shell.label}.path`) ?? []
+            shellPath = shellPathList.at(-1)
+            if (!shellPath) {
+              logs.appendLine('未找到终端路径')
+              return
+            }
           }
           else if (typeof profiles.get(`${shell.label}.path`) === 'string') {
             shellPath = profiles.get<string>(`${shell.label}.path`)
           }
-          else {
-            const shellPathList = execSync(`where ${shell.value.source}`).toString().split(EOL).filter(Boolean)
-            if (shellPathList.length > 0) {
-              shellPath = shellPathList.at(-1)
+          else if (shell.value.source) {
+            if (OSType === 'windows' && shell.label === 'Git Bash') {
+              shellPath = path.join(execSync(`where git`, {}).toString().trim(), '../../bin/bash.exe')
             }
             else {
-              logs.appendLine('未找到终端路径')
-              return
+              const shellPathList = execSync(`${OSType === 'windows' ? 'where' : 'which'} ${shell.label}`, {}).toString().trim().split(EOL)
+              shellPath = shellPathList.at(-1)
+              if (!shellPath) {
+                logs.appendLine('未找到终端路径')
+                return
+              }
             }
           }
           /** 获取所有以快速命令开头的终端 */
