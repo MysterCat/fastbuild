@@ -3,7 +3,7 @@
   "name": "fast-build",
   "displayName": "快速构建工具",
   "type": "module",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "packageManager": "pnpm@10.17.1",
   "description": "快速构建的工具",
   "preview": false,

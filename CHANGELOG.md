@@ -1,5 +1,25 @@
 # 更新日志
 
+## [0.2.7](https://github.com/2815261401/fastbuild/compare/0.2.6...0.2.7) (2025-11-28)
+
+### ✨ Features | 新功能
+
+* ✨使用`tsdown`替代`vite`，执行`快速命令`时需要选择终端 ([bce6eba](https://github.com/2815261401/fastbuild/commit/bce6eba88bc7e5f14a4198491c072dad69161c09))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 🐛修正调用终端的地址，默认选择最后一个，`git`的特殊处理 ([fbde3b8](https://github.com/2815261401/fastbuild/commit/fbde3b81b5932e6ca839d46fe9c8ab356ba5844c))
+
+### 📝 Documentation |文档
+
+* 📝修改文档 ([a9107c9](https://github.com/2815261401/fastbuild/commit/a9107c9f7464d35459c2c88fb606de6a540c7d7d))
+
+### 🎫 Chores | 其他更新
+
+* ⬆️升级依赖 ([3fed3d7](https://github.com/2815261401/fastbuild/commit/3fed3d71f0cf2d4401448039e12972bb279fd223))
+* ⬆️升级依赖 ([de1fdc7](https://github.com/2815261401/fastbuild/commit/de1fdc761b740a4d80c4576efadfde7d553948a4))
+* ⬇️降级`@types/vscode`到指定版本 ([88be949](https://github.com/2815261401/fastbuild/commit/88be949c572b244164da1b8f064b7461a3356e0d))
+
 ## [0.2.6](https://github.com/2815261401/fastbuild/compare/0.2.5...0.2.6) (2025-09-19)
 
 ### 🐛 Bug Fixes | Bug 修复
