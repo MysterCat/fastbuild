@@ -4,7 +4,7 @@
   "displayName": "快速构建工具",
   "type": "module",
   "version": "0.2.7",
-  "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@10.24.0",
   "description": "快速构建的工具",
   "preview": false,
   "license": "UNLICENSED",
@@ -228,7 +228,7 @@
     "jsonc-parser": "^3.3.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.2.0",
+    "@antfu/eslint-config": "^6.3.0",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/rules": "^20.0.0",
     "@commitlint/types": "^20.0.0",
@@ -236,7 +236,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.19.1",
     "@types/vscode": "1.102.0",
-    "@vscode-use/utils": "^0.1.60",
+    "@vscode-use/utils": "^0.1.61",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.1",
@@ -251,7 +251,7 @@
     "radashi": "^12.7.1",
     "release-it": "^19.0.6",
     "tinyglobby": "^0.2.15",
-    "tsdown": "^0.16.7",
+    "tsdown": "^0.16.8",
     "typescript": "^5.9.3"
   }
 }
