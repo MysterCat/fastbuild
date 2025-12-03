@@ -1,5 +1,15 @@
 # 更新日志
 
+## [0.2.8](https://github.com/2815261401/fastbuild/compare/0.2.7...0.2.8) (2025-12-03)
+
+### ✨ Features | 新功能
+
+* ✨快速执行命令支持修改命令 ([1562f92](https://github.com/2815261401/fastbuild/commit/1562f92916de1981ac6dda519cb821bf2f52e7cc))
+
+### 🎫 Chores | 其他更新
+
+* ⬆️升级依赖 ([ce16cee](https://github.com/2815261401/fastbuild/commit/ce16cee132bb4ac646a2cffc73387c84fc953604))
+
 ## [0.2.7](https://github.com/2815261401/fastbuild/compare/0.2.6...0.2.7) (2025-11-28)
 
 ### ✨ Features | 新功能
