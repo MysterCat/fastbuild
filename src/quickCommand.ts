@@ -285,6 +285,18 @@ export async function quickCommand(resource: Uri) {
             /** 替换 */
             commandList[Number(i)] = value
           }
+          /** 要执行的命令 */
+          let commandText = commandList.join('')
+          commandText = await window.showInputBox({
+            title: '确认要执行的命令',
+            placeHolder: '请输入命令',
+            value: commandText,
+            ignoreFocusOut: true,
+          }) ?? ''
+          if (!commandText) {
+            logs.appendLine('取消执行命令')
+            return
+          }
           /** 创建终端 */
           const pw = window.createTerminal({
             name,
@@ -295,7 +307,7 @@ export async function quickCommand(resource: Uri) {
           /** 显示终端 */
           pw.show()
           /** 发送命令 */
-          pw.sendText(commandList.join(''))
+          pw.sendText(commandText)
         }
       }
     }
