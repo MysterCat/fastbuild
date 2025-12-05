@@ -1,10 +1,10 @@
-packages:
-  - packages/custom/*
-  - packages/*
-
 enablePrePostScripts: true
 
 nodeLinker: hoisted
+
+packages:
+  - packages/custom/*
+  - packages/*
 
 ignoredBuiltDependencies:
   - '@vscode/vsce-sign'

@@ -1,5 +1,5 @@
-import type { PluginOptions } from '@custom/conventional-changelog'
 import type { Config } from 'release-it'
+import type { PluginOptions } from './tools'
 
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
@@ -28,7 +28,7 @@ export default assign({
   },
   npm: { publish: false },
   plugins: {
-    '@custom/conventional-changelog': {
+    './tools/index.js': {
       preset: {
         name: 'conventionalcommits',
         types: [

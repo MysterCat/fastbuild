@@ -1,17 +1,16 @@
 #!/usr/bin/env node
-// @ts-check
+/** @ts-check */
 
 import { log } from 'node:console'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
-
 import process from 'node:process'
+
 import checkbox from '@inquirer/checkbox'
 import select, { Separator } from '@inquirer/select'
 import chalk from 'chalk'
 import { Command } from 'commander'
 import { execa, execaSync } from 'execa'
-import { tryit } from 'radashi'
 import { globSync } from 'tinyglobby'
 import { parse } from 'yaml'
 
@@ -124,8 +123,8 @@ program
       /** 获取版本 */
       let npm_package_version = packageName ? `${packageName}@${item.version}` : item.version
       /** 判断版本是否存在 */
-      const [result] = await tryit(() => execa('git', ['rev-parse', '--verify', npm_package_version], { reject: false }))()
-      if (!result) {
+      const result = await execa('git', ['rev-parse', '--verify', npm_package_version], { reject: false })
+      if (!result.stdout) {
         npm_package_version = void 0
       }
       /** 执行命令 */
