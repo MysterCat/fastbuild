@@ -144,8 +144,8 @@ export async function commit(v: SourceControl) {
     createInputBox('header', commitlintConfig),
     createQuickPick('type', commitlintConfig, () => Object.entries(commitlintConfig.prompt?.questions?.type?.enum ?? {}).map(([enumName, enumItem]) => {
       return {
-        label: enumName,
-        value: enumName,
+        label: enumItem.emoji ? enumItem.emoji + enumName : enumName,
+        value: enumItem.emoji ? enumItem.emoji + enumName : enumName,
         description: enumItem.title,
         detail: enumItem.description,
       }

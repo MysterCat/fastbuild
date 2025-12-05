@@ -591,7 +591,15 @@
       "description": "改进离线支持",
       "name": "airplane",
       "semver": null
+    },
+    {
+      "emoji": "🦖",
+      "entity": "&#x2708;",
+      "code": ":t-rex:",
+      "description": "添加向后兼容性的代码",
+      "name": "t-rex",
+      "semver": null
     }
   ],
-  "lastTime": "2025-07-07 13:08:15"
+  "lastTime": "2025-12-05 14:03:52"
 }
