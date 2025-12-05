@@ -1,8 +1,7 @@
-/* eslint-disable antfu/no-import-dist, antfu/no-import-node-modules-by-path */
-import type { GetCommitsParams, GetSemverTagsParams } from '../node_modules/@conventional-changelog/git-client/dist/types'
-import type { Context } from '../node_modules/conventional-changelog-writer/dist/types/context'
-import type { ParserStreamOptions } from '../node_modules/conventional-commits-parser/dist/types'
-import type { Bumper } from '../node_modules/conventional-recommended-bump/dist/bumper'
+import type { GetCommitsParams, GetSemverTagsParams } from '@conventional-changelog/git-client'
+import type { Context, Options } from 'conventional-changelog-writer'
+import type { ParserStreamOptions } from 'conventional-commits-parser'
+import type { Bumper } from 'conventional-recommended-bump'
 
 export interface PluginOptions {
   /** ---------- 通用配置 ---------- */
@@ -68,5 +67,5 @@ export interface PluginOptions {
   context?: Context
   gitRawCommitsOpts?: GetCommitsParams
   parserOpts?: ParserStreamOptions
-  writerOpts?: WriterStreamOptions
+  writerOpts?: Options
 }
