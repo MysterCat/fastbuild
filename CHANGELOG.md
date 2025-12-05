@@ -1,5 +1,19 @@
 # 更新日志
 
+## [0.2.9](///compare/0.2.8...0.2.9) (2025-12-05)
+
+### ⚠ BREAKING CHANGES
+
+* 调整`release`脚本的实现方式，使用`pnpm`的`Catalogs`
+
+### Features
+
+* ✨`约定式提交`支持`emoji` fb0ab92
+
+### Miscellaneous Chores
+
+* 💥升级依赖 f49e42e
+
 ## [0.2.8](https://github.com/2815261401/fastbuild/compare/0.2.7...0.2.8) (2025-12-03)
 
 ### ✨ Features | 新功能
