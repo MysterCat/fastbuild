@@ -1,14 +1,17 @@
 import type { Uri } from 'vscode'
 import type { API, Commit, GitExtension, Repository } from '../types/git'
 
+import { Buffer } from 'node:buffer'
 import { execSync } from 'node:child_process'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { EOL } from 'node:os'
 import path from 'node:path'
 
 import dayjs from 'dayjs'
+import { tryit } from 'radashi'
 import { extensions, window, workspace } from 'vscode'
 
-import { getOSType, getWorkspaceFolder, logs, quickCommandConfig, quickCommandMaxTerminalsNumber } from './utils'
+import { getOSType, getWorkspaceFolder, logs, quickCommandConfig, quickCommandMaxTerminalsNumber, showBox } from './utils'
 
 /** 获取分支 */
 async function getBranchOrCommit(vscodeGit: API, title: string, type: 'branch', defaultValue?: string): Promise<string | undefined>
@@ -129,6 +132,19 @@ async function getBranchOrCommit(vscodeGit: API, title: string, type: 'branch' |
   }
 }
 
+/** 获取(设置)记忆命令 */
+function commandRememberStep(value: string | { command: string, shell: string }): string {
+  const filePath = path.join(import.meta.dirname, 'commandRememberStep')
+  const [,result] = tryit(() => readFileSync(filePath).toString())()
+  const data = result ? JSON.parse(result) : {}
+  if (typeof value === 'string') {
+    return data[value]
+  }
+  data[value.command] = value.shell
+  writeFileSync(filePath, Buffer.from(JSON.stringify(data), 'utf8'))
+  return ''
+}
+
 export async function quickCommand(resource: Uri) {
   /** 获取当前工作目录 */
   const workspaceFolder = await getWorkspaceFolder(resource)
@@ -163,11 +179,16 @@ export async function quickCommand(resource: Uri) {
       })
       /** 如果选择了命令 */
       if (select) {
+        const defaultShell = commandRememberStep(select.value)
         const OSType = getOSType()
         const profiles = workspace.getConfiguration(`terminal.integrated.profiles.${OSType}`)
         /** 选择终端 */
-        const shell = await window.showQuickPick(Object.entries(profiles).filter(([,v]) => typeof v === 'object').map(([k, v]) => ({ label: k, value: v, description: v.name })), {
-          placeHolder: '选择终端',
+        const shell = await showBox('quickPick', {
+          items: Object.entries(profiles).filter(([,v]) => typeof v === 'object').map(([k, v]) => ({ label: k, value: v, description: v.name })),
+          get activeItems() {
+            return this.items.filter((item: { label: string }) => item.label === defaultShell)
+          },
+          placeholder: '选择终端',
           ignoreFocusOut: true,
           matchOnDescription: true,
         })
@@ -308,6 +329,10 @@ export async function quickCommand(resource: Uri) {
           pw.show()
           /** 发送命令 */
           pw.sendText(commandText)
+          commandRememberStep({
+            command: select.value,
+            shell: shell.label,
+          })
         }
       }
     }
