@@ -1,5 +1,20 @@
 # 更新日志
 
+## [0.2.10](https://github.com/2815261401/fastbuild/compare/0.2.9...0.2.10) (2025-12-08)
+
+### ✨ Features | 新功能
+
+* ✨新增快速命令记忆功能 ([1ffd320](https://github.com/2815261401/fastbuild/commit/1ffd32009ea45b5c052c787b61373da029a16488))
+
+### 🐛 Bug Fixes | Bug 修复
+
+* 🐛修复错误依赖，错误的`release-it`的插件 ([76bfffe](https://github.com/2815261401/fastbuild/commit/76bfffe703ea1f6a4f68281d9cccb22cf90c6018))
+
+### 🎫 Chores | 其他更新
+
+* ⬆️升级依赖 ([3b22bf7](https://github.com/2815261401/fastbuild/commit/3b22bf723fdfd31821981c6ffea7cfb853137482))
+* 🐛调整忽略的文件夹 ([3e14a02](https://github.com/2815261401/fastbuild/commit/3e14a0247899d8855501dc00bf164c8166a83c8e))
+
 ## [0.2.9](///compare/0.2.8...0.2.9) (2025-12-05)
 
 ### ⚠ BREAKING CHANGES
