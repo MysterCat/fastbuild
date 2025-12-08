@@ -14,7 +14,7 @@ vsc-extension-quickstart.md
 # custom
 pnpm-lock.yaml
 pnpm-workspace.yaml
-packages
+tools
 .editorconfig
 .husky
 !commitlint.config.ts
