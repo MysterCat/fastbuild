@@ -1,5 +1,12 @@
 # 更新日志
 
+## [0.2.12](https://github.com/2815261401/fastbuild/compare/0.2.11...0.2.12) (2025-12-09)
+
+### 🐛 修复 bug
+
+* 修复`emoji`丢失的空格 ([a9c3697](https://github.com/2815261401/fastbuild/commit/a9c369719050df5695994d0bdc6018399e78599f))
+* 用户不存在`commitlint.config`时，使用默认的配置 ([5df7e7b](https://github.com/2815261401/fastbuild/commit/5df7e7b17a07634ec1a13222e23c6bc2b6ebbfb2))
+
 ## [0.2.11](https://github.com/2815261401/fastbuild/compare/0.2.10...0.2.11) (2025-12-09)
 
 ### ✨ 新增功能
