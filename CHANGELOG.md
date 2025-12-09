@@ -1,5 +1,17 @@
 # 更新日志
 
+## [0.2.11](https://github.com/2815261401/fastbuild/compare/0.2.10...0.2.11) (2025-12-09)
+
+### ✨ 新增功能
+
+* ✨根据配置来确定是否启用`emoji` ([690ce22](https://github.com/2815261401/fastbuild/commit/690ce2285a0466a18a1dbb11937e07a477a5a4d5))
+* 调整`commitlint`配置文件，以支持`emoji` ([c2b5861](https://github.com/2815261401/fastbuild/commit/c2b5861f07331d1624105ad19d1b18b74600f8dd))
+* 调整`release-it`的配置，`changelog`支持`emoji` ([ace8aae](https://github.com/2815261401/fastbuild/commit/ace8aae41b45d2c3ac7347362cc84f62021b07e0))
+
+### 🔧 其他变更
+
+* ⬆️升级依赖 ([a57eea9](https://github.com/2815261401/fastbuild/commit/a57eea9edc2ae7f864248099f10f39c575010790))
+
 ## [0.2.10](https://github.com/2815261401/fastbuild/compare/0.2.9...0.2.10) (2025-12-08)
 
 ### ✨ Features | 新功能
