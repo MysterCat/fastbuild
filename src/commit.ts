@@ -10,7 +10,7 @@ import path from 'node:path'
 import rules from '@commitlint/rules'
 import { RuleConfigSeverity } from '@commitlint/types'
 import dayjs from 'dayjs'
-import { isNullish, objectify, tryit } from 'radashi'
+import { assign, isNullish, objectify, tryit } from 'radashi'
 import { extensions, Uri, workspace } from 'vscode'
 
 import defaultConfig from '../commitlint.config'
@@ -131,7 +131,7 @@ export async function commit(v: SourceControl) {
   /** 如果配置文件存在 */
   if (existsPackage && existsNode) {
     /** 获取用户配置 */
-    commitlintConfig = await loadConfig({ prompt: commitlintConfig.prompt }, { cwd: workspaceFolderUri.fsPath })
+    commitlintConfig = await loadConfig({ prompt: assign(commitlintConfig.prompt, { questions: { type: { emojiInHeader: false } } }) }, { cwd: workspaceFolderUri.fsPath })
   }
   else {
     logs.warn('未找到 package.json 或 node_modules，使用默认配置')
@@ -143,9 +143,10 @@ export async function commit(v: SourceControl) {
   const messageTypeList: InquiryItem<CommitType>[] = [
     createInputBox('header', commitlintConfig),
     createQuickPick('type', commitlintConfig, () => Object.entries(commitlintConfig.prompt?.questions?.type?.enum ?? {}).map(([enumName, enumItem]) => {
+      const emojiInHeader = commitlintConfig.prompt?.questions?.type?.emojiInHeader
       return {
-        label: enumItem.emoji ? enumItem.emoji + enumName : enumName,
-        value: enumItem.emoji ? enumItem.emoji + enumName : enumName,
+        label: emojiInHeader && enumItem.emoji ? enumItem.emoji + enumName : enumName,
+        value: emojiInHeader && enumItem.emoji ? enumItem.emoji + enumName : enumName,
         description: enumItem.title,
         detail: enumItem.description,
       }
