@@ -125,13 +125,16 @@ export async function commit(v: SourceControl) {
   /** 设置工作区 */
   rootConfig.workspaceFolderUri = workspaceFolderUri
   /** 获取默认配置 */
-  let commitlintConfig = await loadConfig(defaultConfig, { cwd: path.join(import.meta.dirname, '..'), file: 'commitlint.config.ts' })
+  let commitlintConfig = (await loadConfig(defaultConfig, { cwd: path.join(import.meta.dirname, '..'), file: 'commitlint.config.ts' }))!
   /** 获取文件是否存在 */
   const [existsPackage, existsNode] = existsPath(workspaceFolderUri.fsPath, ['package.json', 'node_modules'])
   /** 如果配置文件存在 */
   if (existsPackage && existsNode) {
     /** 获取用户配置 */
-    commitlintConfig = await loadConfig({ prompt: assign(commitlintConfig.prompt, { questions: { type: { emojiInHeader: false } } }) }, { cwd: workspaceFolderUri.fsPath })
+    const userConfig = await loadConfig({ prompt: assign(commitlintConfig.prompt, { questions: { type: { emojiInHeader: false } } }) }, { cwd: workspaceFolderUri.fsPath })
+    if (userConfig) {
+      commitlintConfig = userConfig
+    }
   }
   else {
     logs.warn('未找到 package.json 或 node_modules，使用默认配置')

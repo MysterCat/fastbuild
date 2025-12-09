@@ -100,7 +100,7 @@ async function loadParserPreset(options: string | { cwd: string, name: string })
 export async function loadConfig(seed: UserConfig, options: {
   cwd: string
   file?: string
-}): Promise<QualifiedConfig> {
+}): Promise<QualifiedConfig | null> {
   /** 加载配置 */
   const [error, result] = await tryit(() => load(options.cwd, options.file))()
   let config = {} as QualifiedConfig
@@ -109,7 +109,10 @@ export async function loadConfig(seed: UserConfig, options: {
   }
   else {
     config = seed as any
-    logs.error(error!.message)
+    if (error) {
+      logs.error(error.message)
+    }
+    return null
   }
 
   /** 加载解析器 */
