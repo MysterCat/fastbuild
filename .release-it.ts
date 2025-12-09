@@ -4,7 +4,10 @@ import type { PluginOptions } from './tools'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+
 import { assign } from 'radashi'
+
+import commitlint from './commitlint.config'
 
 /** 包名 */
 const packageName = process.env.npm_package_name
@@ -24,26 +27,18 @@ const relative = path.relative(root, current)
 export default assign({
   git: {
     tagName,
-    commitMessage: `chore(release): 🔖${tagName}`,
+    commitMessage: `🔧 chore(release): 🔖${tagName}`,
   },
   npm: { publish: false },
   plugins: {
     './tools/index.js': {
+      parserOpts: {
+        headerPattern: /^(?:\p{Extended_Pictographic}\s+)?(\w*)(?:\((.*)\))?!?:\s(.*)$/u,
+        breakingHeaderPattern: /^(?:\p{Extended_Pictographic}\s)?(\w*)(?:\((.*)\))?!:\s(.*)$/u,
+      },
       preset: {
         name: 'conventionalcommits',
-        types: [
-          { type: 'feat', section: '✨ Features | 新功能' },
-          { type: 'fix', section: '🐛 Bug Fixes | Bug 修复' },
-          { type: 'docs', section: '📝 Documentation |文档' },
-          { type: 'style', section: '💄 Styles | 风格' },
-          { type: 'refactor', section: '♻️ Code Refactoring | 代码重构' },
-          { type: 'perf', section: '⚡ Performance Improvements | 性能优化' },
-          { type: 'test', section: '✅ Tests | 测试' },
-          { type: 'build', section: '👷‍ Build System | 构建' },
-          { type: 'ci', section: '🔧 Continuous Integration | CI 配置' },
-          { type: 'chore', section: '🎫 Chores | 其他更新' },
-          { type: 'revert', section: '⏪ Reverts | 回退' },
-        ],
+        types: Object.entries(commitlint.prompt?.questions?.type?.enum ?? {}).map(([key, value]) => ({ type: key, section: `${value.emoji} ${value.title}`.trim() })),
       },
       EOL: '\n',
       cwd: root,
