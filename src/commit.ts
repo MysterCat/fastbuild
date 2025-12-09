@@ -145,8 +145,8 @@ export async function commit(v: SourceControl) {
     createQuickPick('type', commitlintConfig, () => Object.entries(commitlintConfig.prompt?.questions?.type?.enum ?? {}).map(([enumName, enumItem]) => {
       const emojiInHeader = commitlintConfig.prompt?.questions?.type?.emojiInHeader
       return {
-        label: emojiInHeader && enumItem.emoji ? enumItem.emoji + enumName : enumName,
-        value: emojiInHeader && enumItem.emoji ? enumItem.emoji + enumName : enumName,
+        label: emojiInHeader && enumItem.emoji ? `${enumItem.emoji} ${enumName}` : enumName,
+        value: emojiInHeader && enumItem.emoji ? `${enumItem.emoji}${enumName}` : enumName,
         description: enumItem.title,
         detail: enumItem.description,
       }
