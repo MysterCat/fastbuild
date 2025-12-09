@@ -4,7 +4,7 @@
   "displayName": "快速构建工具",
   "type": "module",
   "version": "0.2.10",
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@10.25.0",
   "description": "快速构建的工具",
   "preview": false,
   "license": "UNLICENSED",
@@ -236,7 +236,7 @@
     "@inquirer/select": "^5.0.2",
     "@release-it/conventional-changelog": "^10.0.2",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^22.19.1",
+    "@types/node": "^22.19.2",
     "@types/vscode": "1.102.0",
     "@vscode-use/utils": "^0.1.61",
     "@vscode/test-cli": "^0.0.12",
@@ -256,7 +256,7 @@
     "radashi": "^12.7.1",
     "release-it": "^19.0.6",
     "tinyglobby": "^0.2.15",
-    "tsdown": "^0.17.1",
+    "tsdown": "^0.17.2",
     "typescript": "^5.9.3",
     "yaml": "^2.8.2"
   }
