@@ -111,8 +111,11 @@ export async function loadConfig(seed: UserConfig, options: {
     config = seed as any
     if (error) {
       logs.error(error.message)
+      logs.info('Using default config')
     }
-    return null
+    if (!options.file) {
+      return null
+    }
   }
 
   /** 加载解析器 */
