@@ -1,9 +1,16 @@
 import type { UserConfig } from '@commitlint/types'
 
 export default {
-  parserPreset: 'conventional-changelog-conventionalcommits',
+  parserPreset: {
+    name: 'conventionalcommits',
+    parserOpts: {
+      headerPattern: /^(?:\p{Extended_Pictographic}\s+)?(\w*)(?:\((.*)\))?!?:\s(.*)$/u,
+      breakingHeaderPattern: /^(?:\p{Extended_Pictographic}\s)?(\w*)(?:\((.*)\))?!:\s(.*)$/u,
+    },
+  },
   rules: {
     'header-max-length': [2, 'always', 120],
+    'header-trim': [2, 'always'],
     'type-case': [2, 'always', 'lower-case'],
     'type-empty': [2, 'never'],
     'type-enum': [
@@ -17,79 +24,101 @@ export default {
     'body-leading-blank': [1, 'always'],
     'body-max-line-length': [2, 'always', 120],
     'footer-leading-blank': [1, 'always'],
-    'footer-max-line-length': [2, 'always', 100],
+    'footer-max-line-length': [2, 'always', 120],
   },
   prompt: {
     questions: {
       header: {
-        description: '请输入提交头(必填)(格式: <type>(<scope>): (:gitmoji:) <subject>)',
+        description: '请输入提交头[必填](格式: (:gitmoji: ?)<type>(<scope>): (:gitmoji:?)<subject>)',
       },
       type: {
-        description: '请选择提交类型(必填)',
+        description: '选择你要提交的变更类型:',
+        emojiInHeader: true,
         enum: {
           feat: {
-            description: '引入新特性',
-            title: '添加功能',
+            description: '新增功能',
+            title: '新增功能',
+            emoji: '✨',
           },
           fix: {
-            description: '修复 Bug',
-            title: '错误修复',
+            description: '修复 bug',
+            title: '修复 bug',
+            emoji: '🐛',
           },
           docs: {
-            description: '添加或者更新文档',
+            description: '文档变更',
             title: '文档变更',
+            emoji: '📃',
           },
           style: {
-            description: '不会影响代码含义的更改（空格，格式，缺少分号等）',
-            title: '格式调整',
+            description: '代码格式变更，不影响代码含义（空格、格式化、缺少分号等）',
+            title: '代码格式变更',
+            emoji: '🌈',
           },
           refactor: {
-            description: '既不是修复 Bug 也不是添加特性的代码更改',
+            description: '代码变更，既不修复 bug 也不新增功能',
             title: '代码重构',
+            emoji: '♻️',
           },
           perf: {
-            description: '更改代码以提高性能',
+            description: '性能优化',
             title: '性能优化',
+            emoji: '🚀',
           },
           test: {
-            description: '添加或者更新测试',
-            title: '更新测试',
+            description: '添加缺失的测试或修正现有的测试',
+            title: '测试',
+            emoji: '🚨',
           },
           build: {
-            description: '影响构建系统或外部依赖项的更改（示例作用域: gulp, broccoli, npm）',
-            title: '依赖调整',
+            description: '构建系统或外部依赖项的变更（例如 scopes: gulp, broccoli, npm）',
+            title: '构建系统变更',
+            emoji: '📦',
           },
           ci: {
-            description: '对 CI 配置文件和脚本的更改（示例作用域: Travis, Circle, BrowserStack, SauceLabs）',
-            title: '脚本变更',
+            description:
+              'CI 配置文件或脚本的变更（例如 scopes: Travis, Circle, BrowserStack, SauceLabs）',
+            title: 'CI 配置变更',
+            emoji: '⚙️',
           },
           chore: {
-            description: '其他不会修改源文件或者测试文件的更改',
-            title: '杂务处理',
+            description: '其他不修改 src 或 test 文件的变更',
+            title: '其他变更',
+            emoji: '🔧',
           },
           revert: {
-            description: '恢复到上一个版本',
-            title: '恢复版本',
+            description: '回滚之前的提交',
+            title: '回滚提交',
+            emoji: '⏪',
           },
         },
       },
       scope: {
-        description: '请输入文件修改范围(可选)(例如组件或文件名)',
+        description: '变更的范围[可选]（例如组件或文件名）',
       },
       subject: {
-        description: '请简要描述提交(必填)',
+        description: '变更的简短描述[必填]',
       },
       body: {
-        description: '请输入详细描述(可选)',
+        description: '变更的详细描述[可选]',
       },
-      footer: {
-        description: '请输入注脚(可选)',
+      isBreaking: {
+        description: '是否有重大变更？[可选]',
+      },
+      breakingBody: {
+        description: '重大变更提交需要包含变更描述。请输入变更描述的详细信息[可选]',
       },
       breaking: {
-        description: '列出任何BREAKING CHANGES(可选)',
+        description: '重大变更的描述[可选]',
+      },
+      isIssueAffected: {
+        description: '是否有影响已打开问题的变更？',
+      },
+      issuesBody: {
+        description: '如果有影响已打开问题的变更，提交需要包含变更描述。请输入变更描述的详细信息',
       },
       issues: {
-        description: '请输入受影响的issue(可选)(例如:“#123”，“#123,#456”。)',
+        description: '添加影响已打开问题的变更引用（例如 "fix #123", "re #123".）',
       },
     },
   },
