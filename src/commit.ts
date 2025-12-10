@@ -149,7 +149,7 @@ export async function commit(v: SourceControl) {
       const emojiInHeader = commitlintConfig.prompt?.questions?.type?.emojiInHeader
       return {
         label: emojiInHeader && enumItem.emoji ? `${enumItem.emoji} ${enumName}` : enumName,
-        value: emojiInHeader && enumItem.emoji ? `${enumItem.emoji}${enumName}` : enumName,
+        value: emojiInHeader && enumItem.emoji ? `${enumItem.emoji} ${enumName}` : enumName,
         description: enumItem.title,
         detail: enumItem.description,
       }
