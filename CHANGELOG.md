@@ -1,5 +1,12 @@
 # 更新日志
 
+## [0.2.13](https://github.com/2815261401/fastbuild/compare/0.2.12...0.2.13) (2025-12-10)
+
+### 🐛 修复 bug
+
+* 修复`commitlint.config`默认配置读取错误 ([8e8297b](https://github.com/2815261401/fastbuild/commit/8e8297b371a3dc4bc55dd2e719f1f5911c96ae55))
+* 修复`type`的空格丢失 ([57e6a36](https://github.com/2815261401/fastbuild/commit/57e6a369632ed0ece4378d47a87bb114e8b73532))
+
 ## [0.2.12](https://github.com/2815261401/fastbuild/compare/0.2.11...0.2.12) (2025-12-09)
 
 ### 🐛 修复 bug
