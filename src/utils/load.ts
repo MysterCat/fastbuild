@@ -1,6 +1,7 @@
 import type { QualifiedConfig, UserConfig } from '@commitlint/types'
 
-import { existsSync } from 'node:fs'
+import crypto from 'node:crypto'
+import { existsSync, rmSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 
@@ -15,6 +16,14 @@ export const rootConfig: { workspaceFolderUri?: Uri } = {
   workspaceFolderUri: void 0,
 }
 
+async function jsLoader(filePath: string) {
+  const fileData = await workspace.fs.readFile(Uri.file(filePath))
+  rmSync(path.join(import.meta.dirname, '../../node_modules/.tmp'), { recursive: true, force: true })
+  const newFilePath = path.join(import.meta.dirname, '../../node_modules/.tmp', `${path.parse(filePath).name}.${crypto.randomUUID()}.js`)
+  await workspace.fs.writeFile(Uri.file(newFilePath), fileData)
+  return defaultLoaders['.js'](newFilePath, '')
+}
+
 async function tsLoader(filePath: string) {
   const requireFromWorkspace = createRequire(path.join(rootConfig.workspaceFolderUri!.fsPath, 'index.js'))
   const [, ts] = await tryit(() => requireFromWorkspace('typescript'))()
@@ -26,7 +35,8 @@ async function tsLoader(filePath: string) {
     const content = new TextDecoder('utf-8').decode(fileData)
     /** 编译 */
     const fileContent = ts.transpileModule(content, tsConfig).outputText
-    const newFilePath = path.join(import.meta.dirname, '../../node_modules/.tmp', `${path.parse(filePath).name}.js`)
+    rmSync(path.join(import.meta.dirname, '../../node_modules/.tmp'), { recursive: true, force: true })
+    const newFilePath = path.join(import.meta.dirname, '../../node_modules/.tmp', `${path.parse(filePath).name}.${crypto.randomUUID()}.js`)
     await workspace.fs.writeFile(Uri.file(newFilePath), new TextEncoder().encode(fileContent))
     return defaultLoaders['.js'](newFilePath, fileContent)
   }
@@ -63,8 +73,9 @@ async function load(cwd: string, configPath?: string) {
     loaders: {
       '.ts': tsLoader,
       '.cts': tsLoader,
-      '.cjs': defaultLoaders['.cjs'],
-      '.js': defaultLoaders['.js'],
+      '.cjs': jsLoader,
+      '.mjs': jsLoader,
+      '.js': jsLoader,
     },
   })
   const explicitPath = configPath ? path.resolve(cwd, configPath) : undefined
