@@ -7,6 +7,9 @@ import { Uri, workspace } from 'vscode'
 
 import { conversionMap, createInquiryItem, getTemplateUri, getWorkspaceFolder, isSubPath, loopInquiry, Template, templateConfig, vscodeButton } from './utils'
 
+const gimsuyRegexp = /^\/.+\/[gimsuy]*$/
+const slashRegexp = /\\|\//g
+
 export async function saveTemplate(resource: Uri) {
   const workspaceFolder = await getWorkspaceFolder(resource)
   if (workspaceFolder) {
@@ -117,10 +120,10 @@ export async function saveTemplate(resource: Uri) {
                     prompt: `示例: ${matchType ? '/^[a-z]+$/ 或 /[a-z]+/gi' : 'test 或 123'}`,
                     buttons: [vscodeButton.left, vscodeButton.cancel, vscodeButton.right],
                     validateInput(v) {
-                      if ([...config.map.values()].map((map: Map<RuleKey, any>) => map.get('key')).includes(v as RuleKey)) {
+                      if (Array.from(config.map.values(), (map: Map<RuleKey, any>) => map.get('key')).includes(v as RuleKey)) {
                         return '匹配模式已存在'
                       }
-                      else if (matchType && v && !/^\/.+\/[gimsuy]*$/.test(v)) {
+                      else if (matchType && v && !gimsuyRegexp.test(v)) {
                         return '请输入正确的正则表达式'
                       }
                       return void 0
@@ -186,7 +189,7 @@ export async function saveTemplate(resource: Uri) {
         /** 匹配规则 */
         const rules = await loopInquiry([getRule(1)])
         if (rules) {
-          template.value = [...rules.values()].map((map: Map<RuleKey, any>) => ({
+          template.value = Array.from(rules.values(), (map: Map<RuleKey, any>) => ({
             key: map.get('key'),
             value: map.get('value'),
             more: map.get('more'),
@@ -196,12 +199,12 @@ export async function saveTemplate(resource: Uri) {
       if (needSave) {
         const templateFolder = await getTemplateUri('folder')
         template.path = path.relative(root.fsPath, path.join(templateFolder.fsPath, name))
-          .replaceAll(/\\|\//g, '/')
+          .replaceAll(slashRegexp, '/')
         workspace.fs.copy(resource, Uri.joinPath(root, template.path))
       }
       else {
         if (isSubPath(root.fsPath, resource.fsPath)) {
-          template.path = path.relative(root.fsPath, resource.fsPath).replaceAll(/\\|\//g, '/')
+          template.path = path.relative(root.fsPath, resource.fsPath).replaceAll(slashRegexp, '/')
         }
         else {
           /** 获取全部工作区 */
@@ -211,7 +214,7 @@ export async function saveTemplate(resource: Uri) {
           if (workspaceFolder) {
             /** 设置所属工作区下标 */
             template.workspaceFolderIndex = workspaceFolders.indexOf(workspaceFolder)
-            template.path = path.relative(workspaceFolder.uri.fsPath, resource.fsPath).replaceAll(/\\|\//g, '/')
+            template.path = path.relative(workspaceFolder.uri.fsPath, resource.fsPath).replaceAll(slashRegexp, '/')
           }
         }
       }

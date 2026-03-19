@@ -145,6 +145,10 @@ function commandRememberStep(value: string | { command: string, shell: string })
   return ''
 }
 
+const bashRegexp = /^\(bash\)/
+const quickCommandRegexp = /^快速命令(?:-\d+)?$/
+const commandListRegexp = /(?<!\\)\$(path|file|dir|(?:custom|branch)(?:<(?:(?!>).)*>)?|commit)/
+
 export async function quickCommand(resource: Uri) {
   /** 获取当前工作目录 */
   const workspaceFolder = await getWorkspaceFolder(resource)
@@ -198,7 +202,7 @@ export async function quickCommand(resource: Uri) {
           let command = select.value
           /** 如果命令使用的是bash */
           if (command.startsWith('(bash)')) {
-            command = command.replace(/^\(bash\)/, '')
+            command = command.replace(bashRegexp, '')
           }
           if (Array.isArray(profiles.get(`${shell.label}.path`))) {
             const shellPathList = profiles.get<string[]>(`${shell.label}.path`) ?? []
@@ -225,7 +229,7 @@ export async function quickCommand(resource: Uri) {
             }
           }
           /** 获取所有以快速命令开头的终端 */
-          const list = window.terminals.filter(v => /^快速命令(?:-\d+)?$/.test(v.name))
+          const list = window.terminals.filter(v => quickCommandRegexp.test(v.name))
           /** 获取当前下标 */
           const index = list.length
           /** 如果已经存在默认终端, 则附带下标 */
@@ -239,7 +243,7 @@ export async function quickCommand(resource: Uri) {
             })
           }
           /** 拆分命令 */
-          const commandList = command.split(/(?<!\\)\$(path|file|dir|(?:custom|branch)(?:<(?:(?!>).)*>)?|commit)/)
+          const commandList = command.split(commandListRegexp)
           /** 替换参数 */
           for (const [i, v] of Object.entries(commandList)) {
             let value: string | undefined = void 0
