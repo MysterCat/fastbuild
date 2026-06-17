@@ -6,75 +6,12 @@
     {
       "type": "npm",
       "script": "watch",
-      "problemMatcher": [
-        {
-          "owner": "typescript",
-          "source": "Typescript",
-          "fileLocation": "absolute",
-          "applyTo": "allDocuments",
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": "Build start",
-            "endsPattern": "Watching for changes"
-          },
-          "pattern": [
-            {
-              "regexp": "^\\sERROR\\s\\s+(.+)$",
-              "message": 1
-            },
-            {
-              "regexp": "^\\s*$"
-            },
-            {
-              "regexp": "^\\s+(.+):(\\d+):(\\d+):$",
-              "file": 1,
-              "line": 2,
-              "column": 3
-            }
-          ]
-        },
-        {
-          "owner": "eslint",
-          "source": "ESLint",
-          "fileLocation": "absolute",
-          "applyTo": "allDocuments",
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": "rolldown-vite v\\d+\\.\\d+\\.\\d+ building for production...",
-            "endsPattern": "built in"
-          },
-          "pattern": [
-            {
-              "regexp": "^ (ERROR|WARNING)\\(ESLint\\)  (.*)$",
-              "severity": 1,
-              "message": 2
-            },
-            {
-              "regexp": "^ FILE  (.*):(\\d*):(\\d*)$",
-              "file": 1,
-              "line": 2,
-              "column": 3
-            }
-          ]
-        }
-      ],
       "isBackground": true,
-      "presentation": {
-        "reveal": "never",
-        "group": "watchers"
-      },
+      "problemMatcher": ["$tsdown-watch", "$tsdown-dts-watch"],
       "group": {
         "kind": "build",
         "isDefault": true
       }
-    },
-    {
-      "label": "build",
-      "type": "shell",
-      "command": "npx",
-      "args": ["tsdown"],
-      "group": "build",
-      "isBackground": false
     }
   ]
 }

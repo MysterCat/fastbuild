@@ -1,11 +1,17 @@
 import type { UserConfig } from '@commitlint/types'
 
+/** @ts-expect-error 忽略导出类型 */
+import createPreset from 'conventional-changelog-conventionalcommits'
+
 export default {
   parserPreset: {
     name: 'conventionalcommits',
     parserOpts: {
-      headerPattern: /^(?:\p{Extended_Pictographic}\s+)?(\w*)(?:\((.*)\))?!?:\s(.*)$/u,
-      breakingHeaderPattern: /^(?:\p{Extended_Pictographic}\s)?(\w*)(?:\((.*)\))?!:\s(.*)$/u,
+      ...createPreset().parser,
+      headerPattern:
+        /^(?:\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?\s+)?(\w*)(?:\((.*)\))?!?:\s(.*)$/u,
+      breakingHeaderPattern:
+        /^(?:\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?\s)?(\w*)(?:\((.*)\))?!:\s(.*)$/u,
     },
   },
   rules: {
@@ -16,7 +22,19 @@ export default {
     'type-enum': [
       2,
       'always',
-      ['feat', 'fix', 'docs', 'style', 'refactor', 'perf', 'test', 'build', 'ci', 'chore', 'revert'],
+      [
+        'feat',
+        'fix',
+        'docs',
+        'style',
+        'refactor',
+        'perf',
+        'test',
+        'build',
+        'ci',
+        'chore',
+        'revert',
+      ],
     ],
     'subject-case': [2, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
     'subject-empty': [2, 'never'],
@@ -29,7 +47,8 @@ export default {
   prompt: {
     questions: {
       header: {
-        description: '请输入提交头[必填](格式: (:gitmoji: ?)<type>(<scope>): (:gitmoji:?)<subject>)',
+        description:
+          '请输入提交头[必填](格式: (:gitmoji: ?)<type>(<scope>): (:gitmoji:?)<subject>)',
       },
       type: {
         description: '选择你要提交的变更类型:',
@@ -68,7 +87,7 @@ export default {
           test: {
             description: '添加缺失的测试或修正现有的测试',
             title: '测试',
-            emoji: '🚨',
+            emoji: '🧪',
           },
           build: {
             description: '构建系统或外部依赖项的变更（例如 scopes: gulp, broccoli, npm）',

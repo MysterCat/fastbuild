@@ -3,6 +3,8 @@ dist
 out
 node_modules
 .vscode-test
+.fast-build
+*.vsix
 
 # Logs
 logs

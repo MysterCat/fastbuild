@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+echo "====== 代码格式 校验 ======"
+
+vp staged

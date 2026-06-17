@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+echo "====== commit-msg 校验 ======"
+
+pnpm commitlint --edit "$1"

@@ -1,4 +1,0 @@
-echo ""
-echo "====== commit-msg 校验 ======"
-echo ""
-npx --no -- commitlint --edit $1

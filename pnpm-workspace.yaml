@@ -1,12 +1,11 @@
 enablePrePostScripts: true
+minimumReleaseAge: 0
+publicHoistPattern:
+  - conventional-changelog-writer
+shellEmulator: true
+trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 43200 # 30 day
 
-nodeLinker: hoisted
-
-packages:
-  - packages/custom/*
-  - packages/*
-
-ignoredBuiltDependencies:
-  - '@vscode/vsce-sign'
-  - esbuild
-  - keytar
+allowBuilds:
+  '@vscode/vsce-sign': true
+  keytar: true

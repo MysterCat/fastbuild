@@ -1,13 +1,13 @@
 {
   "publisher": "lichenghao",
   "name": "fast-build",
-  "displayName": "快速构建工具",
+  "displayName": "快速工具",
   "type": "module",
   "version": "0.2.13",
-  "packageManager": "pnpm@10.33.0",
+  "packageManager": "pnpm@11.7.0",
   "description": "快速构建的工具",
   "preview": false,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/2815261401/fastbuild.git"
@@ -15,249 +15,92 @@
   "categories": [
     "Other"
   ],
-  "main": "./out/extension.js",
+  "main": "./out/extension.mjs",
   "engines": {
-    "node": "22.x",
-    "pnpm": "10.x",
-    "vscode": "^1.102.0"
+    "node": ">=24",
+    "pnpm": ">=11",
+    "vscode": "^1.125.0"
   },
   "activationEvents": [],
   "contributes": {
     "commands": [
       {
-        "command": "fast-build.commit",
-        "title": "约定式提交",
-        "category": "Commitizen",
-        "icon": {
-          "light": "public/menu-icon-light.svg",
-          "dark": "public/menu-icon-dark.svg"
-        }
-      },
-      {
-        "command": "fast-build.quickCommand",
+        "command": "fast-build.quick-command",
         "title": "快速执行命令"
-      },
-      {
-        "command": "fast-build.saveTemplate",
-        "title": "保存为模板"
-      },
-      {
-        "command": "fast-build.useTemplate",
-        "when": "explorerResourceIsFolder",
-        "title": "使用模板"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "fast-build.commit",
+          "command": "fast-build.quick-command",
           "when": "false"
-        },
-        {
-          "command": "fast-build.quickCommand",
-          "when": "false"
-        },
-        {
-          "command": "fast-build.saveTemplate",
-          "when": "false"
-        },
-        {
-          "command": "fast-build.useTemplate",
-          "when": "false"
-        }
-      ],
-      "scm/title": [
-        {
-          "when": "scmProvider == git",
-          "command": "fast-build.commit",
-          "group": "navigation"
         }
       ],
       "editor/context": [
         {
-          "command": "fast-build.quickCommand",
+          "command": "fast-build.quick-command",
           "group": "0_quick_command"
         }
       ],
       "explorer/context": [
         {
-          "command": "fast-build.quickCommand",
+          "command": "fast-build.quick-command",
           "group": "0_quick_command"
-        },
-        {
-          "command": "fast-build.saveTemplate",
-          "group": "1_template"
-        },
-        {
-          "command": "fast-build.useTemplate",
-          "when": "explorerResourceIsFolder",
-          "group": "1_template"
         }
       ]
     },
     "configuration": {
       "title": "快速构建工具",
       "properties": {
-        "fast-build.commitStep": {
-          "type": "object",
-          "default": {
-            "default": [
-              "type",
-              "scope",
-              "gitmoji",
-              "subject"
-            ],
-            "Angluar": [
-              "type",
-              "scope",
-              "gitmoji",
-              "subject",
-              "body",
-              "footer"
-            ],
-            "all": [
-              "type",
-              "scope",
-              "gitmoji",
-              "subject",
-              "body",
-              "breaking",
-              "issues"
-            ]
-          },
-          "markdownDescription": "提交消息的步骤，`header`会覆盖`type`,`scope`,`gitmoji`,`subject`,`footer`会覆盖`breaking`,`issues`。",
-          "patternProperties": {
-            ".*": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "header",
-                  "type",
-                  "scope",
-                  "gitmoji",
-                  "subject",
-                  "body",
-                  "footer",
-                  "breaking",
-                  "issues"
-                ]
-              }
-            }
-          },
-          "additionalProperties": false
-        },
-        "fast-build.commitRememberStep": {
-          "type": "string",
-          "default": "",
-          "markdownDescription": "记住的步骤。"
-        },
-        "fast-build.commitNeedRemember": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "是否需要记住步骤。"
-        },
-        "fast-build.commitScopes": {
-          "type": "array",
-          "default": [],
-          "markdownDescription": "指定 `scope` 中的可选项。"
-        },
-        "fast-build.commitAppendBranchName": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "是否在提交信息中追加当前分支名称。"
-        },
-        "fast-build.commitUpdateGitmoji": {
-          "type": "boolean",
-          "default": false,
-          "markdownDescription": "是否更新 `gitmoji`。选择该项后，[gitmoji](https://gitmoji.dev/api/gitmojis)将使用连接中的 `gitmoji`描述。"
-        },
-        "fast-build.quickCommandConfig": {
+        "fast-build.quick-command.config": {
           "type": "object",
           "additionalProperties": "string",
           "default": {},
-          "markdownDescription": "右击快速执行命令\n- `$path`会替换为右击的文件(夹)路径\n- `$file`只对文件生效\n- `$dir`只对文件夹生效,`$custom`用于自定义参数\n- `$custom<text>`将会设置默认值\n- `$branch`会替换为当前分支名称\n- `$branch<text>`如果默认值存在，会自动选择\n- `$commit`会替换为提交的hash"
+          "markdownDescription": "右击快速执行命令\n- `$path` 右击的文件(夹)路径\n- `$file` 右击的文件路径，只对文件生效\n- `$dir` 右击的文件夹路径，如果是文件，则会使用文件所在的文件夹路径\n- `$custom` 自定义参数，通过输入框输入参数\n- `$custom<text>` 自定义参数，`text`为默认值\n- `$branch` 分支名称，选择当前仓库的分支名称\n- `$branch<text>` 分支名称，`text`为默认值\n- `$commit` 提交哈希，选择当前仓库的提交哈希"
         },
-        "fast-build.quickCommandMaxTerminalsNumber": {
+        "fast-build.quick-command.max-number": {
           "type": "number",
           "default": 3,
           "minimum": 1,
           "markdownDescription": "最多存在的终端数量，超过数量将自动关闭。"
-        },
-        "fast-build.templateWorkspaceFolder": {
-          "type": "number",
-          "default": -1,
-          "description": "模板配置所在工作区(多个工作区时需要设置)"
-        },
-        "fast-build.templateConfigInExtension": {
-          "type": "boolean",
-          "default": true,
-          "description": "模板配置是否保存在扩展中"
-        },
-        "fast-build.templateConfigPath": {
-          "type": "string",
-          "default": ".vscode/template.config.jsonc",
-          "description": "模板配置保存位置"
-        },
-        "fast-build.templateFolderPath": {
-          "type": "string",
-          "default": ".vscode/template",
-          "description": "模板保存位置"
         }
       }
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run package",
-    "compile": "tsdown",
-    "watch": "tsdown --watch",
-    "package": "tsdown --mode production",
+    "vscode:prepublish": "pnpm package",
+    "compile": "vp pack",
+    "watch": "BUILD_MODE=watch vp pack --watch",
+    "package": "BUILD_MODE=package vp pack",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "test": "vscode-test",
-    "build": "vsce package",
+    "pretest": "pnpm compile-tests && pnpm compile && pnpm eslint",
+    "build": "vsce package --no-dependencies",
     "pre-release": "vsce package --pre-release",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "prepare": "husky",
-    "release": "node ./tools/release.js"
+    "release": "release-it",
+    "lint": "pnpm -r --workspace-root exec vp check",
+    "lint:fix": "pnpm -r --workspace-root exec vp check --fix",
+    "eslint": "pnpm -r --workspace-root exec eslint .",
+    "eslint:fix": "pnpm -r --workspace-root exec eslint . --fix",
+    "prepare": "vp config"
   },
-  "dependencies": {
-    "conventional-changelog-conventionalcommits": "^9.3.1",
-    "jsonc-parser": "^3.3.1"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@antfu/eslint-config": "^7.7.3",
-    "@commitlint/cli": "^20.5.0",
-    "@commitlint/rules": "^20.5.0",
-    "@commitlint/types": "^20.5.0",
-    "@inquirer/checkbox": "^5.1.2",
-    "@inquirer/select": "^5.1.2",
-    "@release-it/conventional-changelog": "^10.0.6",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^25.5.0",
-    "@types/vscode": "1.102.0",
-    "@vscode-use/utils": "^0.1.61",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.7.1",
-    "chalk": "^5.6.2",
-    "commander": "^14.0.3",
-    "cosmiconfig": "^9.0.1",
-    "dayjs": "^1.11.20",
-    "eslint": "^10.1.0",
+    "@antfu/eslint-config": "^9.0.0",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/types": "^21.0.1",
+    "@release-it/conventional-changelog": "^11.0.1",
+    "@types/node": "^25.9.3",
+    "@types/vscode": "^1.125.0",
+    "@vscode/vsce": "^3.9.2",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
+    "dayjs": "^1.11.21",
+    "eslint": "^10.5.0",
     "eslint-plugin-format": "^2.0.1",
-    "execa": "^9.6.1",
-    "husky": "^9.1.7",
-    "jiti": "^2.6.1",
-    "lilconfig": "^3.1.3",
-    "lint-staged": "^16.4.0",
-    "radashi": "^12.7.2",
-    "release-it": "^19.2.4",
-    "tinyglobby": "^0.2.15",
-    "tsdown": "^0.21.7",
-    "typescript": "^6.0.2",
-    "yaml": "^2.8.3"
+    "jiti": "^2.7.0",
+    "radashi": "^12.9.1",
+    "release-it": "^20.2.0",
+    "typescript": "^6.0.3",
+    "vite-plus": "^0.2.0"
   }
 }

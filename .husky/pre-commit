@@ -1,6 +1,0 @@
-echo ""
-echo "====== 代码格式 校验 ======"
-echo ""
-export NODE_OPTIONS="--experimental-strip-types"
-# 格式效验
-npx lint-staged --config lint-staged.config.ts
