@@ -1,7 +1,6 @@
 enablePrePostScripts: true
 minimumReleaseAge: 0
-publicHoistPattern:
-  - conventional-changelog-writer
+nodeLinker: hoisted
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 day

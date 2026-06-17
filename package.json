@@ -154,7 +154,7 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm compile-tests && pnpm compile && pnpm eslint",
-    "build": "vsce package --no-dependencies",
+    "build": "vsce package",
     "pre-release": "vsce package --pre-release",
     "release": "release-it",
     "lint": "pnpm -r --workspace-root exec vp check",
@@ -163,18 +163,19 @@
     "eslint:fix": "pnpm -r --workspace-root exec eslint . --fix",
     "prepare": "vp config"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@commitlint/load": "^21.0.2",
+    "conventional-changelog-conventionalcommits": "^9.3.1"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^9.0.0",
     "@commitlint/cli": "^21.0.2",
     "@commitlint/lint": "^21.0.2",
-    "@commitlint/load": "^21.0.2",
     "@commitlint/types": "^21.0.1",
     "@release-it/conventional-changelog": "^11.0.1",
     "@types/node": "^25.9.3",
     "@types/vscode": "^1.125.0",
     "@vscode/vsce": "^3.9.2",
-    "conventional-changelog-conventionalcommits": "^9.3.1",
     "dayjs": "^1.11.21",
     "eslint": "^10.5.0",
     "eslint-plugin-format": "^2.0.1",

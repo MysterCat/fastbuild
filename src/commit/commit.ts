@@ -110,7 +110,7 @@ export async function commit(source: SourceControl) {
   /** 提交信息 */
   const message = messageList.join('\n')
 
-  if (addList) {
+  if (addList && scope) {
     /** 更新范围 */
     await updateConfig(commitConfig, 'scopes', result.scope)
   }
