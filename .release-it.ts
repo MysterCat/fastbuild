@@ -22,6 +22,7 @@ export default {
       },
       header: '# 更新日志',
       infile: 'CHANGELOG.md',
+      strictSemVer: true,
       ignoreRecommendedBump: true,
       writerOpts: {
         finalizeContext(context) {
