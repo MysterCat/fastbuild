@@ -138,7 +138,10 @@ export async function commit(source: SourceControl) {
         const editor = await window.showTextDocument(doc)
         /** 编辑提交信息文件 */
         await editor.edit((editBuilder) => {
-          editBuilder.insert(new Position(0, 0), message)
+          const text = doc.getText()
+          if (!text.startsWith(message)) {
+            editBuilder.insert(new Position(0, 0), message)
+          }
         })
         /** 保存提交信息文件 */
         await doc.save()
