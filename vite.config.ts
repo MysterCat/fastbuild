@@ -20,6 +20,9 @@ export default defineConfig({
   pack: {
     entry: 'src/extension.ts',
     outDir: 'out',
+    copy: [
+      'node_modules/.pnpm/@commitlint+config-validator@21.0.1/node_modules/@commitlint/config-validator/lib/commitlint.schema.json',
+    ],
     platform: 'node',
     format: 'es',
     sourcemap: process.env.BUILD_MODE === 'watch',

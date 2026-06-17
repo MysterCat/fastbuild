@@ -31,3 +31,8 @@ export function initConfig(...config: CommandConfig[]) {
   })
   return config
 }
+
+/** 更新配置 */
+export function updateConfig<T extends CommandConfig>(config: T, key: keyof T, value?: string) {
+  return workspace.getConfiguration(`${extendedName}.${config.key}`).update(key.toString(), value)
+}

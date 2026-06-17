@@ -27,12 +27,25 @@
       {
         "command": "fast-build.quick-command",
         "title": "快速执行命令"
+      },
+      {
+        "command": "fast-build.commit",
+        "title": "约定式提交",
+        "category": "Commitizen",
+        "icon": {
+          "light": "public/menu-icon-light.svg",
+          "dark": "public/menu-icon-dark.svg"
+        }
       }
     ],
     "menus": {
       "commandPalette": [
         {
           "command": "fast-build.quick-command",
+          "when": "false"
+        },
+        {
+          "command": "fast-build.commit",
           "when": "false"
         }
       ],
@@ -46,6 +59,13 @@
         {
           "command": "fast-build.quick-command",
           "group": "0_quick_command"
+        }
+      ],
+      "scm/title": [
+        {
+          "when": "scmProvider == git",
+          "command": "fast-build.commit",
+          "group": "navigation"
         }
       ]
     },
@@ -63,6 +83,65 @@
           "default": 3,
           "minimum": 1,
           "markdownDescription": "最多存在的终端数量，超过数量将自动关闭。"
+        },
+        "fast-build.commit.step": {
+          "type": "object",
+          "default": {
+            "default": [
+              "type",
+              "scope",
+              "gitmoji",
+              "subject"
+            ],
+            "Angluar": [
+              "type",
+              "scope",
+              "gitmoji",
+              "subject",
+              "body",
+              "footer"
+            ],
+            "all": [
+              "type",
+              "scope",
+              "gitmoji",
+              "subject",
+              "body",
+              "breaking",
+              "issues"
+            ]
+          },
+          "markdownDescription": "提交消息的步骤，`header`会覆盖`type`,`scope`,`gitmoji`,`subject`,`footer`会覆盖`breaking`,`issues`。",
+          "patternProperties": {
+            ".*": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "header",
+                  "type",
+                  "scope",
+                  "gitmoji",
+                  "subject",
+                  "body",
+                  "footer",
+                  "breaking",
+                  "issues"
+                ]
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "fast-build.commit.update.gitmoji": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "是否更新 `gitmoji`。选择该项后，[gitmoji](https://gitmoji.dev/api/gitmojis)将使用连接中的 `gitmoji`描述。"
+        },
+        "fast-build.commit.scopes": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "指定 `scope` 中的可选项。"
         }
       }
     }
@@ -88,6 +167,8 @@
   "devDependencies": {
     "@antfu/eslint-config": "^9.0.0",
     "@commitlint/cli": "^21.0.2",
+    "@commitlint/lint": "^21.0.2",
+    "@commitlint/load": "^21.0.2",
     "@commitlint/types": "^21.0.1",
     "@release-it/conventional-changelog": "^11.0.1",
     "@types/node": "^25.9.3",
