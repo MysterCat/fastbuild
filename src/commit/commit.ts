@@ -111,8 +111,9 @@ export async function commit(source: SourceControl) {
   const message = messageList.join('\n')
 
   if (addList && scope) {
+    commitConfig.scopes.push(scope)
     /** 更新范围 */
-    await updateConfig(commitConfig, 'scopes', result.scope)
+    await updateConfig(commitConfig, 'scopes', commitConfig.scopes)
   }
 
   /** 如果没有变更，全部添加 */
