@@ -1,5 +1,12 @@
 # 更新日志
 
+## 0.3.4 (2026-06-18)
+
+### 🐛 修复 bug
+
+- 🐛修复保存配置的错误格式 ([ce2cee6](https://github.com/2815261401/fastbuild/commit/ce2cee6596f4ea26b855d8258b8f90aec180a743))
+- 🐛修复效验函数导致返回按钮无法使用 ([837be91](https://github.com/2815261401/fastbuild/commit/837be91382a06558dff9530f095e7e1f5ee840dd))
+
 ## 0.3.3 (2026-06-18)
 
 ### 🐛 修复 bug
