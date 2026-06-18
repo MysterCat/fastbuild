@@ -1,5 +1,12 @@
 # 更新日志
 
+## 0.3.2 (2026-06-18)
+
+### 🐛 修复 bug
+
+- 🐛启用`release-it`严格语义版本 ([77a01dc](https://github.com/2815261401/fastbuild/commit/77a01dc86b5c27799a1a267b7b0f83b395866627))
+- 🐛修复`COMMIT_EDITMSG`重复添加消息的错误 ([96a99bc](https://github.com/2815261401/fastbuild/commit/96a99bc650bba16afad4dc2c1ad81133a9e93795))
+
 ## 0.3.1 (2026-06-18)
 
 ### 📦 构建系统变更
