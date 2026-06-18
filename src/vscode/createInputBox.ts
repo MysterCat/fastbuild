@@ -106,6 +106,7 @@ export function createInputBox(
       }
       else if (button === vscodeButton.left) {
         value = button
+        input.validationMessage = void 0
       }
 
       cancel = false
