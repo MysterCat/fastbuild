@@ -15,6 +15,8 @@ interface CommitConfig extends CommandConfig {
   updateGitmoji: boolean
   /** 作用域可选项 */
   scopes: string[]
+  /** 是否推送 */
+  push: boolean
   setScopes(value: string[]): void
 }
 
@@ -28,6 +30,7 @@ export const commitConfig: CommitConfig = {
   },
   updateGitmoji: false,
   scopes: [],
+  push: false,
   setScopes(value: string[]) {
     this.scopes = value
     workspace.getConfiguration(`${extendedName}.${this.key}`).update('scopes', value)

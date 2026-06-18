@@ -120,47 +120,56 @@ export async function commit(source: SourceControl) {
     await commands.executeCommand('git.stageAll')
   }
 
-  /** 设置提交信息 */
-  source.inputBox.value = ''
+  if (commitConfig.push) {
+    /** 设置提交信息 */
+    source.inputBox.value = ''
 
-  /** 提交信息文件位置 */
-  const commitUri = Uri.joinPath(gitUri, '.git', 'COMMIT_EDITMSG')
+    /** 提交信息文件位置 */
+    const commitUri = Uri.joinPath(gitUri, '.git', 'COMMIT_EDITMSG')
 
-  /** 监听提交信息文件打开 */
-  window.tabGroups.onDidChangeTabs(async (e) => {
-    for (const tab of e.opened) {
-      /** 提交信息文件 */
-      const input = tab.input as { uri: Uri }
-      /** 如果是提交信息文件 */
-      if (input.uri.fsPath === commitUri.fsPath) {
-        /** 打开提交信息文件 */
-        const doc = await workspace.openTextDocument(commitUri)
-        const editor = await window.showTextDocument(doc)
-        /** 编辑提交信息文件 */
-        await editor.edit((editBuilder) => {
-          const text = doc.getText()
-          if (!text.startsWith(message)) {
-            editBuilder.insert(new Position(0, 0), message)
-          }
-        })
-        /** 保存提交信息文件 */
-        await doc.save()
+    /** 监听提交信息文件打开 */
+    const disposable = window.tabGroups.onDidChangeTabs(async (e) => {
+      for (const tab of e.opened) {
+        /** 提交信息文件 */
+        const input = tab.input as { uri: Uri }
+        /** 如果是提交信息文件 */
+        if (input.uri.fsPath === commitUri.fsPath) {
+          /** 打开提交信息文件 */
+          const doc = await workspace.openTextDocument(commitUri)
+          const editor = await window.showTextDocument(doc)
+          /** 编辑提交信息文件 */
+          await editor.edit((editBuilder) => {
+            const text = doc.getText()
+            if (!text.startsWith(message)) {
+              editBuilder.insert(new Position(0, 0), message)
+            }
+          })
+          /** 保存提交信息文件 */
+          await doc.save()
+        }
       }
-    }
-  })
+    })
 
-  /** 提交 */
-  await commands.executeCommand('git.commit')
+    /** 提交 */
+    await commands.executeCommand('git.commit')
 
-  /** 如果有提交 */
+    /** 取消监听 */
+    disposable.dispose()
+  }
+  else {
+    /** 设置提交信息 */
+    source.inputBox.value = message
+  }
+
+  /** 如果没有提交 */
   if (repository.state.indexChanges.length > 0) {
     source.inputBox.value = message
   }
   else {
     logs.info(`提交信息:`)
     logs.append(message)
-
-    /** 设置默认步骤 */
-    writeConfig('steps', result.step, gitUri.path)
   }
+
+  /** 设置默认步骤 */
+  writeConfig('steps', result.step, gitUri.path)
 }

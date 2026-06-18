@@ -142,6 +142,11 @@
           "type": "array",
           "default": [],
           "markdownDescription": "指定 `scope` 中的可选项。"
+        },
+        "fast-build.commit.push": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "是否推送。"
         }
       }
     }
