@@ -110,8 +110,8 @@ export async function commit(source: SourceControl) {
   /** 提交信息 */
   const message = messageList.join('\n')
 
-  if (addList && scope) {
-    commitConfig.scopes.push(scope)
+  if (addList && result.scope) {
+    commitConfig.scopes.push(result.scope)
     /** 更新范围 */
     await updateConfig(commitConfig, 'scopes', commitConfig.scopes)
   }
@@ -172,5 +172,5 @@ export async function commit(source: SourceControl) {
   }
 
   /** 设置默认步骤 */
-  writeConfig('steps', result.step, gitUri.path)
+  writeConfig('defaultStep', result.step, gitUri.path)
 }
