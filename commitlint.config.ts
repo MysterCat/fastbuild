@@ -1,19 +1,95 @@
 import type { UserConfig } from '@commitlint/types'
+import type { CommitType } from 'conventional-changelog-conventionalcommits'
 
-/** @ts-expect-error 忽略导出类型 */
+import defaultConfig from '@commitlint/config-conventional'
 import createPreset from 'conventional-changelog-conventionalcommits'
 
-export default {
-  parserPreset: {
-    name: 'conventionalcommits',
-    parserOpts: {
-      ...createPreset().parser,
-      headerPattern:
-        /^(?:\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?\s+)?(\w*)(?:\((.*)\))?!?:\s(.*)$/u,
-      breakingHeaderPattern:
-        /^(?:\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?\s)?(\w*)(?:\((.*)\))?!:\s(.*)$/u,
-    },
+/** 类型枚举 */
+export const types: CommitType[] = [
+  {
+    type: 'feat',
+    section: '✨ 新增功能',
+    effect: 'bump',
   },
+  {
+    type: 'fix',
+    section: '🐛 修复问题',
+    effect: 'bump',
+  },
+  {
+    type: 'docs',
+    section: '📃 文档更新',
+    effect: 'changelog',
+  },
+  {
+    type: 'style',
+    section: '🌈 格式调整',
+    effect: 'changelog',
+  },
+  {
+    type: 'refactor',
+    section: '♻️ 代码重构',
+    effect: 'changelog',
+  },
+  {
+    type: 'perf',
+    section: '🚀 性能优化',
+    effect: 'bump',
+  },
+  {
+    type: 'test',
+    section: '🧪 测试变更',
+    effect: 'changelog',
+  },
+  {
+    type: 'build',
+    section: '📦 构建变更',
+    effect: 'changelog',
+  },
+  {
+    type: 'ci',
+    section: '⚙️ 持续集成',
+    effect: 'changelog',
+  },
+  {
+    type: 'chore',
+    section: '🔧 其他变更',
+    effect: 'changelog',
+  },
+  {
+    type: 'revert',
+    section: '⏪ 回滚提交',
+    effect: 'bump',
+  },
+]
+
+const typeEnum = defaultConfig.prompt.questions.type.enum
+
+/** 创建 Emoji 解析器 */
+function createEmojiParser() {
+  /** 解析选项 */
+  const parserOpts = {
+    headerPattern:
+      /^(?:\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?\s+)?(\w*)(?:\((.*)\))?!?:\s(.*)$/u,
+    breakingHeaderPattern:
+      /^(?:\p{Extended_Pictographic}(?:\uFE0F|\uFE0E)?\s)?(\w*)(?:\((.*)\))?!:\s(.*)$/u,
+  }
+
+  /** 创建 conventional Commits 配置 */
+  const conventionalcommits = createPreset({
+    types,
+  })
+
+  return {
+    ...conventionalcommits,
+    parserOpts,
+    recommendedBumpOpts: { parserOpts },
+    conventionalChangelog: { parserOpts },
+  }
+}
+
+export default {
+  parserPreset: createEmojiParser(),
   rules: {
     'header-max-length': [2, 'always', 120],
     'header-trim': [2, 'always'],
@@ -53,64 +129,19 @@ export default {
       type: {
         description: '选择你要提交的变更类型:',
         emojiInHeader: true,
-        enum: {
-          feat: {
-            description: '新增功能',
-            title: '新增功能',
-            emoji: '✨',
-          },
-          fix: {
-            description: '修复 bug',
-            title: '修复 bug',
-            emoji: '🐛',
-          },
-          docs: {
-            description: '文档变更',
-            title: '文档变更',
-            emoji: '📃',
-          },
-          style: {
-            description: '代码格式变更，不影响代码含义（空格、格式化、缺少分号等）',
-            title: '代码格式变更',
-            emoji: '🌈',
-          },
-          refactor: {
-            description: '代码变更，既不修复 bug 也不新增功能',
-            title: '代码重构',
-            emoji: '♻️',
-          },
-          perf: {
-            description: '性能优化',
-            title: '性能优化',
-            emoji: '🚀',
-          },
-          test: {
-            description: '添加缺失的测试或修正现有的测试',
-            title: '测试',
-            emoji: '🧪',
-          },
-          build: {
-            description: '构建系统或外部依赖项的变更（例如 scopes: gulp, broccoli, npm）',
-            title: '构建系统变更',
-            emoji: '📦',
-          },
-          ci: {
-            description:
-              'CI 配置文件或脚本的变更（例如 scopes: Travis, Circle, BrowserStack, SauceLabs）',
-            title: 'CI 配置变更',
-            emoji: '⚙️',
-          },
-          chore: {
-            description: '其他不修改 src 或 test 文件的变更',
-            title: '其他变更',
-            emoji: '🔧',
-          },
-          revert: {
-            description: '回滚之前的提交',
-            title: '回滚提交',
-            emoji: '⏪',
-          },
-        },
+        enum: Object.fromEntries(
+          types.map(({ type, section }) => {
+            const [emoji, title] = section?.split(' ') ?? []
+            return [
+              type,
+              {
+                emoji,
+                title,
+                description: typeEnum[type as keyof typeof typeEnum].description,
+              },
+            ]
+          }),
+        ),
       },
       scope: {
         description: '变更的范围[可选]（例如组件或文件名）',

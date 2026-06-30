@@ -1,7 +1,13 @@
-import type { Options } from 'conventional-changelog-writer'
 import type { Config } from 'release-it'
 
-import commitlint from './commitlint.config'
+import commitlint, { types } from './commitlint.config'
+
+interface Context {
+  noteGroups?: {
+    title: string
+    notes?: { text: string }[]
+  }[]
+}
 
 export default {
   git: {
@@ -15,17 +21,16 @@ export default {
     '@release-it/conventional-changelog': {
       parserOpts: commitlint.parserPreset.parserOpts,
       preset: {
-        name: commitlint.parserPreset.name,
-        types: Object.entries(commitlint.prompt?.questions?.type?.enum ?? {}).map(
-          ([key, value]) => ({ type: key, section: `${value.emoji} ${value.title}`.trim() }),
-        ),
+        name: 'conventionalcommits',
+        types,
       },
       header: '# 更新日志',
       infile: 'CHANGELOG.md',
       strictSemVer: true,
       ignoreRecommendedBump: true,
       writerOpts: {
-        finalizeContext(context) {
+        commitsSort: 'date',
+        finalizeContext(context: Context) {
           for (const noteGroup of context.noteGroups ?? []) {
             noteGroup.title = '💥 重大变更'
             for (const note of noteGroup.notes ?? []) {
@@ -35,7 +40,7 @@ export default {
 
           return context
         },
-      } satisfies Options,
+      },
     },
   },
 } satisfies Config
