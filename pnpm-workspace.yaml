@@ -8,3 +8,6 @@ trustPolicyIgnoreAfter: 43200 # 30 day
 allowBuilds:
   '@vscode/vsce-sign': true
   keytar: true
+
+overrides:
+  conventional-changelog: 8.0.0
