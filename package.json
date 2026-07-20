@@ -169,6 +169,7 @@
     "prepare": "vp config"
   },
   "dependencies": {
+    "@commitlint/config-conventional": "^21.2.0",
     "@commitlint/load": "^21.2.0",
     "conventional-changelog-conventionalcommits": "^10.2.1"
   },

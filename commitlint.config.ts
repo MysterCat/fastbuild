@@ -18,17 +18,17 @@ export const types: CommitType[] = [
   {
     type: 'docs',
     section: '📃 文档更新',
-    effect: 'changelog',
+    effect: 'hidden',
   },
   {
     type: 'style',
     section: '🌈 格式调整',
-    effect: 'changelog',
+    effect: 'hidden',
   },
   {
     type: 'refactor',
     section: '♻️ 代码重构',
-    effect: 'changelog',
+    effect: 'hidden',
   },
   {
     type: 'perf',
@@ -38,22 +38,22 @@ export const types: CommitType[] = [
   {
     type: 'test',
     section: '🧪 测试变更',
-    effect: 'changelog',
+    effect: 'hidden',
   },
   {
     type: 'build',
     section: '📦 构建变更',
-    effect: 'changelog',
+    effect: 'hidden',
   },
   {
     type: 'ci',
     section: '⚙️ 持续集成',
-    effect: 'changelog',
+    effect: 'hidden',
   },
   {
     type: 'chore',
     section: '🔧 其他变更',
-    effect: 'changelog',
+    effect: 'hidden',
   },
   {
     type: 'revert',
@@ -139,6 +139,7 @@ function createEmojiParser() {
   })
 
   return {
+    name: 'conventionalcommits',
     ...conventionalcommits,
     parserOpts,
     recommendedBumpOpts: { parserOpts },
@@ -146,36 +147,16 @@ function createEmojiParser() {
   }
 }
 
+/** 配置 */
+export const parserPreset = createEmojiParser()
+
 export default {
-  parserPreset: createEmojiParser(),
+  extends: ['@commitlint/config-conventional'],
+  parserPreset,
   rules: {
     'header-max-length': [2, 'always', 120],
-    'header-trim': [2, 'always'],
-    'type-case': [2, 'always', 'lower-case'],
-    'type-empty': [2, 'never'],
-    'type-enum': [
-      2,
-      'always',
-      [
-        'feat',
-        'fix',
-        'docs',
-        'style',
-        'refactor',
-        'perf',
-        'test',
-        'build',
-        'ci',
-        'chore',
-        'revert',
-      ],
-    ],
-    'subject-case': [2, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
-    'subject-empty': [2, 'never'],
-    'subject-full-stop': [2, 'never', '.'],
-    'body-leading-blank': [1, 'always'],
+    'type-enum': [2, 'always', types.map(({ type }) => type)],
     'body-max-line-length': [2, 'always', 120],
-    'footer-leading-blank': [1, 'always'],
     'footer-max-line-length': [2, 'always', 120],
   },
   prompt: {

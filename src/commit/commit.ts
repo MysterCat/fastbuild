@@ -1,4 +1,4 @@
-import type { LintOptions } from '@commitlint/types'
+import type { LintOptions, UserConfig } from '@commitlint/types'
 
 import type { GitExtension } from 'types/git'
 
@@ -40,9 +40,18 @@ export async function commit(source: SourceControl) {
 
   /** 获取默认配置 */
   let commitlintConfig = await commitlintLoad({}, { cwd: extensionRoot.fsPath })
-  if (await loadConfig(gitUri.fsPath)) {
-    /** 获取工作区配置 */
-    commitlintConfig = await commitlintLoad({}, { cwd: gitUri.fsPath })
+  const config = await loadConfig(gitUri.fsPath)
+  if (config) {
+    try {
+      /** 获取工作区配置 */
+      commitlintConfig = await commitlintLoad({}, { cwd: gitUri.fsPath })
+    }
+    catch {
+      /** 获取工作区覆盖默认配置 */
+      commitlintConfig = await commitlintLoad(config.config as UserConfig, {
+        cwd: extensionRoot.fsPath,
+      })
+    }
   }
 
   /** 获取默认步骤 */
