@@ -4,7 +4,7 @@
   "displayName": "快速工具",
   "type": "module",
   "version": "0.3.5",
-  "packageManager": "pnpm@11.9.0",
+  "packageManager": "pnpm@11.15.0",
   "description": "快速构建的工具",
   "preview": false,
   "license": "MIT",
@@ -170,24 +170,24 @@
   },
   "dependencies": {
     "@commitlint/load": "^21.2.0",
-    "conventional-changelog-conventionalcommits": "^10.2.0"
+    "conventional-changelog-conventionalcommits": "^10.2.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.1.0",
-    "@commitlint/cli": "^21.2.0",
+    "@commitlint/cli": "^21.2.1",
     "@commitlint/lint": "^21.2.0",
     "@commitlint/types": "^21.2.0",
     "@release-it/conventional-changelog": "^11.0.1",
-    "@types/node": "^26.0.1",
+    "@types/node": "^26.1.1",
     "@types/vscode": "^1.125.0",
     "@vscode/vsce": "^3.9.2",
     "dayjs": "^1.11.21",
-    "eslint": "^10.6.0",
+    "eslint": "^10.7.0",
     "eslint-plugin-format": "^2.0.1",
     "jiti": "^2.7.0",
     "radashi": "^12.9.1",
     "release-it": "^20.2.1",
-    "typescript": "^6.0.3",
-    "vite-plus": "^0.2.1"
+    "typescript": "6.0.3",
+    "vite-plus": "^0.2.5"
   }
 }
