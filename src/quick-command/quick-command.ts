@@ -8,6 +8,7 @@ import { execSync } from 'node:child_process'
 import { EOL } from 'node:os'
 import path from 'node:path'
 
+import { group } from 'radashi'
 import { extensions, FileType, window, workspace } from 'vscode'
 
 import { getOSType, initConfig, logs, readConfig, writeConfig } from '@/utils'
@@ -172,9 +173,33 @@ export async function quickCommand(resource: Uri) {
     }
     /** 如果是分支 */ else if (v.startsWith('branch') || v === 'commit') {
       value = v.slice(7, -1)
-      /** 获取分支 */
-      const branches = await repository!.getBranches({ remote: true })
+      /** 获取分支组 */
+      const groups = group(
+        await repository!.getBranches({ remote: true }),
+        v => v.remote ?? '本地分支',
+      )
 
+      /** 选择分支组 */
+      const groupName = await createSelect({
+        title: '请选择分支组',
+        placeholder: '请选择分支组',
+        ignoreFocusOut: true,
+        matchOnDescription: true,
+        items: Object.keys(groups),
+        get activeItems() {
+          const head = repository!.state.HEAD?.name
+          const [item] = Object.entries(groups).find(([, v]) => v?.some(i => i.name === head)) ?? []
+          return item ? [item] : []
+        },
+      })
+
+      if (groupName === void 0) {
+        logs.warn('取消执行命令')
+        return
+      }
+
+      /** 选择分支 */
+      const branches = groups[groupName]!
       if (branches.length > 1) {
         const options = Object.values(branches).map(
           item =>
@@ -202,8 +227,9 @@ export async function quickCommand(resource: Uri) {
         value = branch
       }
       else {
-        value = branches[0].name
+        value = branches[0]?.name
       }
+
       /** 如果是提交 */
       if (v === 'commit') {
         const stdout = execSync(
