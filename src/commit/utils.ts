@@ -315,6 +315,8 @@ const stepHandlers = {
       title: '请选择提交类型',
       placeholder: commitlintConfig.prompt?.questions?.type?.description ?? '请选择提交类型',
       items,
+      matchOnDescription: true,
+      matchOnDetail: true,
     })
   },
   async scope(
@@ -424,6 +426,8 @@ const stepHandlers = {
       title: '请选择Gitmoji',
       placeholder: '请选择Gitmoji',
       items,
+      matchOnDescription: true,
+      matchOnDetail: true,
     })
   },
   subject(
